@@ -1,1 +1,19 @@
-.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+.axis path,
+.line {
+    fill: none;
+    stroke: red;
+    stroke-width: 4px;
+}
+
+.axis path {
+    stroke: black;
+    stroke-width: 2px;
+}
+
+#pulse {
+	font-size: 20em;
+}
+
+.x.axis line {
+  shape-rendering: auto;
+}
