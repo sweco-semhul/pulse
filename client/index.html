@@ -70,7 +70,6 @@ Map Icons from Maps Icons Collection - http://mapicons.nicolasmollet.com
                     .domain([20, 225])
                     .range([380, 0]);
 
-
             var line = d3.svg.line()
                     .interpolate("basis")
                     .x(function(d, i) {
@@ -105,6 +104,7 @@ Map Icons from Maps Icons Collection - http://mapicons.nicolasmollet.com
                     .attr("class", "line");
 
             var swecoPulse = null;
+
 
 			$(function() {
 				swecoPulse = new SwecoPulse({
