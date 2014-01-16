@@ -1,0 +1,64 @@
+
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7 oldie" lang="sv"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8 oldie" lang="sv"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9 oldie" lang="sv"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="sv"> <!--<![endif]-->
+<!-- 
+Map Icons from Maps Icons Collection - http://mapicons.nicolasmollet.com
+-->
+<!-- PAGE HEAD START -->
+    <head>
+<!-- META START -->
+        <meta charset="utf-8">
+<!-- TITLE START -->
+        <title>Sweco Pulse</title>
+<!-- TITLE STOP -->
+        <meta http-equiv="Content-Language" content="sv">
+        <meta http-equiv="cleartype" content="on">
+        <meta http-equiv="imagetoolbar" content="no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="initial-scale=1.0, maximum-scale=1, user-scalable=no, width=device-width">
+        <!-- width=device-width causes the iPhone 5 to letterbox the app, so we want to exclude it for iPhone 5 to allow full screen apps -->
+        <meta name="viewport" id="vp" content="initial-scale=1.0, maximum-scale=1, user-scalable=no" media="(device-height: 568px)" /> 
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+<!-- META STOP -->
+
+<!-- CSS START -->
+	<link href="js/lib/bootstrap3/css/bootstrap.min.css" rel="stylesheet"/>
+<!-- CSS STOP -->
+		
+    </head>
+<!-- PAGE HEAD STOP -->
+<!-- PAGE BODY START -->
+    <body>
+
+        <div class="container">
+        	<table class="table">
+		        <tbody id="user-list">
+		        </tbody>
+			</table>
+        </div>
+
+
+		<script src="js/lib/jquery-2.0.3.min.js"></script>
+		<script src="js/lib/bootstrap3/js/bootstrap.min.js"></script>
+		<script src="js/lib/d3.v3.min.js" charset="utf-8"></script>
+	    <script src="js/app.js"></script>
+
+    	
+        <script type="text/javascript">
+	        var swecoPulse = null;
+
+			$(function() {
+				swecoPulse = new SwecoPulse({
+					$userList: $('#user-list')
+				});
+			});	
+        </script>
+
+    </body>
+<!-- PAGE BODY STOP -->
+</html>
+<!-- HTML STOP -->
