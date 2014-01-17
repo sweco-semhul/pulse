@@ -11,14 +11,22 @@ wsServer = new WebSocketServer({
     httpServer: server
 });
 
+var getFakeBPM = function(id) {
+  var val = parseInt((Math.random()*90 + 40));
+  if(val > 120)
+    return '<HeartRate id="' + id + '" BPM="' + val  + '" timestamp="' + Date.now() + '"/>';
+  else
+    return '<SensorDrop id="' + id + '" timestamp="' + Date.now() + '"/>';
+}
+
 // WebSocket server
 wsServer.on('request', function(request) {
     var connection = request.accept(null, request.origin);
     setInterval(function() {
-      ['1','2','3','4'].forEach(function(id) {
-        connection.sendUTF('<HeartRate id="' + id + 'h" BPM="' + parseInt((Math.random()*90 + 40)) + '" timestamp="' + Date.now() + '"/>');
+      ['15084h','45752h','4h'].forEach(function(id) {
+        connection.sendUTF(getFakeBPM(id));
       });
-    }, 2000);
+    }, 500);
     
     /*
     var client = net.connect({ host: "172.18.117.54", port: 8168 }, function() { //'connect' listener

@@ -38,8 +38,7 @@ Map Icons from Maps Icons Collection - http://mapicons.nicolasmollet.com
         <div class="container">
         	<div id="graph"></div>
         	<table class="table">
-		        <tbody id="user-list">
-		        	<tr id="pulse"><tr>
+		        <tbody id="sensors-list">
 		        </tbody>
 			</table>
         </div>
@@ -55,141 +54,177 @@ Map Icons from Maps Icons Collection - http://mapicons.nicolasmollet.com
         <script type="text/javascript">
 	        var swecoPulse = null;
 			(function() {
-				var data = heartRates;
-				var n = heartRates.length,
-				    duration = 1000,
-				    now = new Date(Date.now() - duration),
-				    count = 0;
-				var numberOfSensors = 4;
+				var sensorConfig = [
+					{
+						id: '15084h',
+						name: 'Pelle',
+						maxBpm: 150
+					},
+					{
+						id: '45752h',
+						name: 'Martin',
+						maxBpm: 0
+					},
+					{
+						id: null,
+						name: '',
+						maxBpm: 0
+					},
+					{
+						id: null,
+						name: '',
+						maxBpm: 0
+					}
+				];
 
 				var margin = {top: 6, right: 0, bottom: 20, left: 0},
-				    width = 960 - margin.right,
-				    height = 400 - margin.top - margin.bottom;
-
-				var x = d3.time.scale()
-				    .domain([now - (n - 2) * duration, now - duration])
-				    .range([0, width]);
-
-				var y = d3.scale.linear()
-					.domain([40,225])
-				    .range([height, 0]);
-
-				
-
-				var svg = d3.select("#graph").append("p").append("svg")
-				    .attr("width", width + margin.left + margin.right)
-				    .attr("height", height + margin.top + margin.bottom)
-				    .style("margin-left", -margin.left + "px")
-				  .append("g")
-				    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-				svg.append("defs").append("clipPath")
-				    .attr("id", "clip")
-				  .append("rect")
-				    .attr("width", width)
-				    .attr("height", height);
-
-				/*var axis = svg.append("g")
-				    .attr("class", "x axis")
-				    .attr("transform", "translate(100," + height + ")")
-				    .call(x.axis = d3.svg.axis().scale(x).orient("bottom"));
-				*/
-		
-				var yAxis = d3.svg.axis().scale(y).orient("left");
-
-	            var yAxisGroup = svg.append("g")
-	                    .attr("class", "y axis")
-	                    .attr("transform", "translate(100,0)")
-	                    .call(yAxis);
-
-	            svg.append("g").append("text")
-	                    .attr("class", "label")
-	                    .attr("transform", "rotate(-90)")
-	                    .attr("x", -25)
-	                    .attr("y", 40)
-	                    .attr("dy", ".71em")
-	                    .style("text-anchor", "end")
-	                    .text("Puls (antal slag)");
+				    width = 700 - margin.right,
+				    height = 150 - margin.top - margin.bottom;
+				var duration = 500;
 
 	            var sensors = [];
-	            for (var i = 0; i < numberOfSensors; i++) {
-	            	$('#pulse').append('<th id="pulse' + i + '" style="width: ' + 100/numberOfSensors + '%;"></th>');
-	            	var sensor = {
-						id: null, 
-						data: heartRates
-					};
-	            	sensor.line = d3.svg.line()
-					    .interpolate("basis")
-					    .x(function(d, i) { return x(now - (n - 1 - i) * duration); })
-					    .y(function(d, i) { return y(d.BPM); });
-	            	sensor.path = svg.append("g")
-						.attr("transform", "translate(100,0)")
-					    .attr("clip-path", "url(#clip)")
-					 	.append("path")
-					    .data(sensor.data)
-					    .attr("class", "line line" + i);
-					sensors.push(sensor);
-	            };
-				
-	            console.log(sensors);
-
+	            for (var i = 0; i < sensorConfig.length; i++) {
+	            	var sensorCfg = sensorConfig[i];
+	            	if(sensorCfg.id) {
+		            	$('#sensors-list').append('<tr><td id="user' + i + '" class="name">' + sensorCfg.name + '</td><td id="graph' + i + '"></td><th class="pulse" id="pulse' + i + '"></th></tr>');
+		            	var sensor = {
+							id: sensorCfg.id, 
+							data: $.extend(true, [], heartRates)
+						};
+		            	sensor.n = sensor.data.length;
+						var now = new Date(Date.now() - duration);
 
 				
+						sensor.x = d3.time.scale()
+						    .domain([now - (sensor.n - 2) * duration, now - duration])
+						    .range([0, width]);
+
+						sensor.y = d3.scale.linear()
+							.domain([40,225])
+						    .range([height, 0]);
+
+						sensor.line = d3.svg.line()
+						    .interpolate("basis")
+						    .x(function(d, i) { return sensor.x(now - (sensor.n - 1 - i) * duration); })
+					    	.y(function(d, i) { return sensor.y(d.BPM); });
+
+						sensor.svg = d3.select("#graph" + i).append("p").append("svg")
+						    .attr("width", width + margin.left + margin.right)
+						    .attr("height", height + margin.top + margin.bottom)
+						    .style("margin-left", -margin.left + "px")
+						  	.append("g")
+						    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+						sensor.svg.append("defs").append("clipPath")
+					    	.attr("id", "clip")
+					  		.append("rect")
+					    	.attr("width", width)
+					    	.attr("height", height);
+
+					/*	sensor.axis = sensor.svg.append("g")
+					    .attr("class", "x axis")
+					    .attr("transform", "translate(100," + height + ")")
+					    .call(sensor.x.axis = d3.svg.axis().scale(sensor.x).orient("bottom"));
+*/
+
+						sensor.yAxis = d3.svg.axis().scale(sensor.y).orient("left");
+
+		            	sensor.yAxisGroup = sensor.svg.append("g")
+		                    .attr("class", "y axis")
+		                    .attr("transform", "translate(100,0)")
+		                    .call(sensor.yAxis);
+
+		            	sensor.svg.append("g").append("text")
+		                    .attr("class", "label")
+		                    .attr("transform", "rotate(-90)")
+		                    .attr("x", -25)
+		                    .attr("y", 40)
+		                    .attr("dy", ".71em")
+		                    .style("text-anchor", "end")
+		                    .text("Puls (antal slag)");
+
+						sensor.path = sensor.svg.append("g")
+							.attr("transform", "translate(100,0)")
+						    .attr("clip-path", "url(#clip)")
+						  .append("path")
+						    .data([sensor.data])
+						    .attr("class", "line");
+						
+						sensors.push(sensor);
+					}
+		        };
 
 				function tick(d) {
 
 				  // update the domains
 				  now = new Date();
-				  x.domain([now - (n - 2) * duration, now - duration]);
+				  
 
 				  // push the accumulated count onto the back, and reset the count
 				  
 
 				  count = 0;
 
-				  
-
 				  // slide the x-axis left
-				  /*axis.transition()
-				      .ease("linear")
-				      .call(x.axis);*/
+				 
 
 				  
 				  	// Find sensor index
 				  	var index = null;
 				    for (var i = 0; i < sensors.length; i++) {
 				 		var sensor = sensors[i];
-				  		if(d.id === sensor.id || !sensor.id) {
+				  		if(d.id === sensor.id) {
 				  			index = i;
 				  		}
 				    }
 
 				    if(index !== null) {
-				    	$('#pulse' + index).html(d.BPM);
+				    	var sensor = sensors[index];
+				    	sensor.data.push(d);
+				    	sensor.x.domain([now - (sensor.n - 2) * duration, now - duration]);
 
-				  	  	var sensor = sensors[index];
+				    	/*sensor.axis.transition()
+					      .ease("linear")
+					      .call(sensor.x.axis);*/
+
+				    	
+
+				  	  	
 				  	  	if(!sensor.id) {
 				  	  		sensor.id = d.id;
 				  	  	}
-				  	  	console.log(index, sensor.id, d.id);
-				  		sensor.data.push(d);
-					 	// redraw the line
-					  	svg.select(".line" + index)
-					      .attr("d", sensor.line)
-					      .attr("transform", null);
-					      // slide the line left
-				  		sensor.path.transition()
-					      .ease("linear")
-					      .attr("transform", "translate(" + x(now - (n - 1) * duration) + ")");
-					     // pop the old data point off the front
-				  		sensor.data.shift();
+				  		
+				  		//console.log(index, sensor.id, sensor.data.length);
+
+
+				  		// redraw the line
+						  sensor.svg.select(".line")
+						      .attr("d", sensor.line)
+						      .attr("transform", null);
+
+						  // slide the x-axis left
+						 /* sensor.axis.transition()
+						      .ease("linear")
+						      .call(sensor.x.axis);*/
+
+						  // slide the line left
+						  sensor.path.transition()
+						      .ease("linear")
+						      .attr("transform", "translate(" + sensor.x(now - (sensor.n - 1) * duration) + ")");
+
+						  // pop the old data point off the front
+						  sensor.data.shift();
+						  $('#pulse' + index).html(d.BPM);
 				    }
 
 				  
 
 			}
 
-			var socket = new WebSocket("ws://localhost:9000"); 
+			var host = 'localhost';//'172.18.117.54'; // Pelle
+
+
+			var socket = new WebSocket('ws://' + host +':9000'); 
 
 			socket.onopen = function(){
 				console.log("Socket has been opened!");
@@ -204,19 +239,24 @@ Map Icons from Maps Icons Collection - http://mapicons.nicolasmollet.com
 			}
 
 			socket.onmessage = function(resp){
-				console.log(resp);
 				if(resp.data) {
-					var xml = $.parseXML(resp.data);
-					xml = $(xml).find('HeartRate');
+					try {
+						var xml = $.parseXML(resp.data);
+						xml = $(xml).find('HeartRate');
 
-					if(xml.length > 0) {
-						var pulse = {
-							id: parseFloat(xml.attr('id')),
-							BPM: parseFloat(xml.attr('BPM')), 
-							timestamp: parseFloat(xml.attr('timestamp'))
+						if(xml.length > 0) {
+							var pulse = {
+								id: xml.attr('id'),
+								BPM: parseFloat(xml.attr('BPM')), 
+								timestamp: parseFloat(xml.attr('timestamp'))
+							}
+							console.log(pulse);
+							if(pulse.BPM) {
+								tick(pulse);
+							}
 						}
-						console.log(pulse);
-						tick(pulse);
+					} catch(e) {
+						console.log(e);
 					}
 				}
 			}

@@ -10,8 +10,15 @@
     stroke-width: 2px;
 }
 
-#pulse {
-	font-size: 10em;
+.pulse {
+	width: 20%;
+	font-size: 6em;
+	vertical-align: middle !important;
+}
+
+.name {
+	vertical-align: middle !important;
+	font-size: 3em;
 }
 
 .x.axis line {
